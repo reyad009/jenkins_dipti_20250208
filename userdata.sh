@@ -1,25 +1,21 @@
 #!/bin/bash
-sudo apt-get update -y
-
-sudo apt-get install -y openjdk-11-jdk wget curl gnupg2 software-properties-common
-
-#Jenkins
-wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
-sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
-sudo apt-get update -y
+# Install Jenkins
+wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
+sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+sudo apt-get update
+sudo apt-get install -y openjdk-11-jdk
 sudo apt-get install -y jenkins
 
-#Docker
-sudo apt-get install -y docker.io
+# Install Docker
+sudo apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 
-#Jenkins to Docker group
+# Permission to Docker
 sudo usermod -aG docker jenkins
 
-# Start Jenkins & Docker
-sudo systemctl start jenkins
-sudo systemctl enable jenkins
-sudo systemctl start docker
-sudo systemctl enable docker
-
-# Restart Jenkins
+# Restart
 sudo systemctl restart jenkins
+sudo systemctl restart docker
